@@ -74,6 +74,7 @@ class ViewController: UIViewController, SettingsViewControllerDelegate, HistoryT
                 if let fromVal = Double(val) {
                     let convKey =  LengthConversionKey(toUnits: tUnits, fromUnits: fUnits)
                     let toVal = fromVal * lengthConversionTable[convKey]!;
+                    entries.append(Conversion.init(fromVal: fromVal, toVal: toVal, mode: currentMode, fromUnits: fromUnits.text!, toUnits: toUnits.text!, timestamp: Date()))
                     dest?.text = "\(toVal)"
                 }
             case .Volume:
@@ -88,7 +89,6 @@ class ViewController: UIViewController, SettingsViewControllerDelegate, HistoryT
                 if let fromVal = Double(val) {
                     let convKey =  VolumeConversionKey(toUnits: tUnits, fromUnits: fUnits)
                     let toVal = fromVal * volumeConversionTable[convKey]!;
-                    //entries.append(Conversion.[fromVal, toVal, currentMode, fromField, toField, Date])
                     entries.append(Conversion.init(fromVal: fromVal, toVal: toVal, mode: currentMode, fromUnits: fromUnits.text!, toUnits: toUnits.text!, timestamp: Date()))
 
                     dest?.text = "\(toVal)"
