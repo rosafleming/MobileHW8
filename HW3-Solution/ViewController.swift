@@ -9,10 +9,8 @@
 import UIKit
 
 class ViewController: UIViewController, SettingsViewControllerDelegate, HistoryTableViewControllerDelegate {
-    func selectEntry(entry: Conversion) {
-    }
     
-
+    
     @IBOutlet weak var fromField: UITextField!
     @IBOutlet weak var toField: UITextField!
     @IBOutlet weak var fromUnits: UILabel!
@@ -32,12 +30,12 @@ class ViewController: UIViewController, SettingsViewControllerDelegate, HistoryT
         fromField.delegate = self
         self.view.backgroundColor = BACKGROUND_COLOR
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         self.view.endEditing(true)
@@ -46,7 +44,7 @@ class ViewController: UIViewController, SettingsViewControllerDelegate, HistoryT
     @IBAction func calculatePressed(_ sender: UIButton) {
         // determine source value of data for conversion and dest value for conversion
         var dest : UITextField?
-
+        
         var val = ""
         if let fromVal = fromField.text {
             if fromVal != "" {
@@ -90,7 +88,7 @@ class ViewController: UIViewController, SettingsViewControllerDelegate, HistoryT
                     let convKey =  VolumeConversionKey(toUnits: tUnits, fromUnits: fUnits)
                     let toVal = fromVal * volumeConversionTable[convKey]!;
                     entries.append(Conversion.init(fromVal: fromVal, toVal: toVal, mode: currentMode, fromUnits: fromUnits.text!, toUnits: toUnits.text!, timestamp: Date()))
-
+                    
                     dest?.text = "\(toVal)"
                 }
             }
@@ -111,8 +109,8 @@ class ViewController: UIViewController, SettingsViewControllerDelegate, HistoryT
             currentMode = .Volume
             fromUnits.text = VolumeUnit.Gallons.rawValue
             toUnits.text = VolumeUnit.Liters.rawValue
-//            fromField.placeholder =
-//            toField.placeholder = "Enter volume in \(toUnits.text!)"
+            //            fromField.placeholder =
+            //            toField.placeholder = "Enter volume in \(toUnits.text!)"
             fromField.attributedPlaceholder =
                 NSAttributedString(string: "Enter volume in \(fromUnits.text!)", attributes: [NSAttributedStringKey.foregroundColor :
                     FOREGROUND_COLOR])
@@ -123,8 +121,8 @@ class ViewController: UIViewController, SettingsViewControllerDelegate, HistoryT
             currentMode = .Length
             fromUnits.text = LengthUnit.Yards.rawValue
             toUnits.text = LengthUnit.Meters.rawValue
-//            fromField.placeholder = "Enter length in \(fromUnits.text!)"
-//            toField.placeholder = "Enter length in \(toUnits.text!)"
+            //            fromField.placeholder = "Enter length in \(fromUnits.text!)"
+            //            toField.placeholder = "Enter length in \(toUnits.text!)"
             fromField.attributedPlaceholder =
                 NSAttributedString(string: "Enter length in \(fromUnits.text!)", attributes: [NSAttributedStringKey.foregroundColor :
                     FOREGROUND_COLOR])
@@ -132,7 +130,7 @@ class ViewController: UIViewController, SettingsViewControllerDelegate, HistoryT
                 NSAttributedString(string: "Enter length in \(toUnits.text!)", attributes: [NSAttributedStringKey.foregroundColor :
                     FOREGROUND_COLOR])
         }
-
+        
         calculatorHeader.text = "\(currentMode.rawValue) Conversion Calculator"
         
     }
@@ -150,12 +148,13 @@ class ViewController: UIViewController, SettingsViewControllerDelegate, HistoryT
         if segue.identifier == "historySegue" {
             //clearPressed(sender as! UIButton)
             if let  target = segue.destination as? HistoryTableViewController {
+                target.entries = entries
                 target.mode = currentMode
-                target.fUnits = fromUnits.text!
-                target.tUnits = toUnits.text!
+                target.fUnits = fromUnits.text
+                target.tUnits = toUnits.text
                 target.historyDelegate = self
-                target.toField = toField!
-                target.fromField = fromField!
+                target.toField = toField
+                target.fromField = fromField
                 target.timeStamp = Date()
             }
         }
@@ -172,6 +171,12 @@ class ViewController: UIViewController, SettingsViewControllerDelegate, HistoryT
         self.fromUnits.text = fromUnits.rawValue
         self.toUnits.text = toUnits.rawValue
     }
+    func selectEntry(entry: Conversion) {
+        self.fromUnits.text = entry.fromUnits
+        self.toUnits.text = entry.toUnits
+        self.toField.text = String(entry.toVal)
+        self.fromField.text = String(entry.fromVal)
+    }
 }
 
 extension ViewController : UITextFieldDelegate {
@@ -183,4 +188,3 @@ extension ViewController : UITextFieldDelegate {
         }
     }
 }
-
